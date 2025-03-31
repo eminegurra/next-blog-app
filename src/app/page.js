@@ -12,15 +12,6 @@ export default async function Home() {
   return (
     <div className="grid grid-rows-[auto_1fr_auto] items-center justify-items-center min-h-screen p-8 gap-16 sm:p-20 font-sans">
       <main className="text-center space-y-8">
-        {/* Logo */}
-        <Image
-          className="dark:invert mx-auto"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
 
         {/* Buttons */}
         <div className="flex gap-4 items-center justify-center flex-wrap">
