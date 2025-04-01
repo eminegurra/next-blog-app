@@ -15,12 +15,12 @@ export default async function Home() {
 
         {/* Buttons */}
         <div className="flex gap-4 items-center justify-center flex-wrap">
-          <Link
+          {/* <Link
             href="/blog/new"
             className="rounded-full bg-blue-600 text-white px-5 py-2 hover:bg-blue-700 transition font-medium"
           >
             + Create New Post
-          </Link>
+          </Link> */}
         </div>
 
         {/* Blog Post Cards */}

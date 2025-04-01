@@ -1,23 +1,32 @@
 import { NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
+import { jwtVerify } from 'jose';
 
-const SECRET = process.env.JWT_SECRET || 'super-secret';
+const SECRET = process.env.JWT_SECRET;
+const encoder = new TextEncoder();
+const secretKey = encoder.encode(SECRET);
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/admin/:path*'], // protect only /admin/*
 };
 
-export function middleware(req) {
+export async function middleware(req) {
   const token = req.cookies.get('token')?.value;
 
-  try {
-    const user = jwt.verify(token, SECRET);
-    if (user.role !== 'admin') {
-      return NextResponse.redirect(new URL('/unauthorized', req.url));
-    }
-  } catch (err) {
+  if (!token) {
     return NextResponse.redirect(new URL('/login', req.url));
   }
 
-  return NextResponse.next();
+  try {
+    const { payload } = await jwtVerify(token, secretKey);
+
+    if (payload.role !== 'admin') {
+      return NextResponse.redirect(new URL('/unauthorized', req.url));
+    }
+
+    // Token verified, allow access
+    return NextResponse.next();
+  } catch (err) {
+    console.error('⛔ JWT verification failed:', err.message);
+    return NextResponse.redirect(new URL('/login', req.url));
+  }
 }

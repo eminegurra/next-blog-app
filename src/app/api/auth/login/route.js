@@ -16,9 +16,10 @@ export async function POST(req) {
   }
 
   const token = jwt.sign({ id: user.id, role: user.role }, SECRET, { expiresIn: '1d' });
+  console.log('token',token)
 
-  const res = NextResponse.json({ success: true });
+  const res = NextResponse.json({ success: true, role: user.role }); // ✅ Send role back
   res.cookies.set('token', token, { httpOnly: true, path: '/' });
-
+  
   return res;
 }

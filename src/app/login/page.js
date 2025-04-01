@@ -2,27 +2,32 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext'; // ✅ Import context
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
+  const { setAuth } = useAuth(); // ✅ make sure it's here
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     const res = await fetch('/api/auth/login', {
       method: 'POST',
+      credentials: 'include',
       body: JSON.stringify({ email, password }),
     });
 
     if (res.ok) {
-      router.push('/admin/posts');
+      const data = await res.json();
+      setAuth({ isLoggedIn: true, role: data.role }); // ✅ sets global state
+      router.push(data.role === 'admin' ? '/admin/posts/new' : '/');
     } else {
-      const { error } = await res.json();
-      alert(error || 'Login failed');
+      alert('Login failed');
     }
   };
+
 
   return (
     <main className="max-w-md mx-auto p-10">
